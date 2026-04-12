@@ -51,6 +51,11 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
+        .movie-card header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
         .movie-card header h2 {
             margin: 0 0 12px;
             font-size: 1.4rem;
@@ -92,7 +97,7 @@
         }
 
         .movie-card p {
-            margin: 0 0 14px;
+            margin: 14px 0;
             color: #4b5563;
             line-height: 1.5;
             font-size: 0.95rem;
@@ -139,7 +144,7 @@
             display: flex;
             justify-content: left;
             gap: 8px;
-            margin: auto 0 5px;
+            margin: auto 0 18px;
         }
 
         .rating-badge {
@@ -154,10 +159,17 @@
         }
 
         /* genre tags */
+        .movie-genres {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 8px 0px 10px;
+        }
+
         .genre-tag {
             display: inline-block;
-            margin: 0 8px 8px 0;
-            padding: 6px 12px;
+            padding: 3px 12px 6px;
             border-radius: 999px;
             background: #dfdcef;
             color: #374151;
@@ -175,9 +187,8 @@
         /* tablist container */
         .credits-tablist {
             display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            width: 100%;
+            justify-content: left;
+            gap: 3px;
             padding: 3px;
             margin-bottom: 5px;
             background: #f3f4f6;
@@ -328,14 +339,25 @@
 
                         const header = document.createElement("header");
 
+                        // Title
                         const title = document.createElement("h2");
                         title.textContent = movie.title;
-
                         header.append(title);
+
+                        // Genres as tags
+                        const genres = document.createElement("div");
+                        genres.classList.add("movie-genres");
+                        movie.genres.forEach(genre => {
+                            const genreSpan = document.createElement("span");
+                            genreSpan.textContent = genre;
+                            genreSpan.classList.add("genre-tag"); // Add a class for styling
+                            genres.append(genreSpan);
+                        });
+                        header.append(genres);
+
                         article.append(header);
 
                         // Poster image
-
                         const imgwrapper = document.createElement("div");
                         imgwrapper.classList.add("img-wrapper");
 
@@ -362,17 +384,6 @@
                             `;
                         article.append(detailsText);
 
-                        // Genres as tags
-                        const genres = document.createElement("div");
-                        movie.genres.forEach(genre => {
-                            const genreSpan = document.createElement("span");
-                            genreSpan.textContent = genre;
-                            genreSpan.classList.add("genre-tag"); // Add a class for styling
-                            genres.append(genreSpan);
-                        });
-                        article.append(genres);
-
-
                         const movieDetails = document.createElement("div");
                         movieDetails.classList.add("movie-details");
                         article.append(movieDetails);
@@ -390,6 +401,9 @@
                         plot.classList.add("movie-plot");
                         plot.classList.add("scrollable");
                         plot.textContent = movie.plot;
+                        const plotHeading = document.createElement("strong");
+                        plotHeading.textContent = "Overview: ";
+                        plot.insertBefore(plotHeading, plot.firstChild);
                         movieDetails.append(plot);
 
                         // Ratings as pills
