@@ -27,6 +27,7 @@
             margin: 20px auto;
             display: flex;
             flex-wrap: wrap;
+            align-items: flex-start;
             justify-content: left;
         }
 
@@ -98,7 +99,7 @@
         }
 
         /* movie details section */
-        .movie-card p.movie-details {
+        .movie-card p.meta-data {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -109,16 +110,16 @@
             margin: 0.5rem 0;
         }
 
-        .movie-card p.movie-details .label {
+        .movie-card p.meta-data .label {
             font-weight: 600;
             color: #555;
         }
 
-        .movie-card p.movie-details .value {
+        .movie-card p.meta-data .value {
             font-weight: 400;
         }
 
-        .movie-card p.movie-details .separator {
+        .movie-card p.meta-data .separator {
             margin: 0 2px;
             color: #aaa;
         }
@@ -210,6 +211,7 @@
 
         /* panels */
         .credits-panel {
+            margin-bottom: 8px;
             padding: 5px 14px 10px;
             font-size: 0.9em;
             border-radius: 14px;
@@ -262,8 +264,43 @@
 
             background: linear-gradient(to bottom, transparent, #fafafa);
         }
+
+        /* expand button */
+        .movie-details {
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.3s ease, opacity 0.25s ease;
+        }
+
+        .movie-details.open {
+            max-height: 700px;
+            opacity: 1;
+        }
+
+        .expand-btn {
+            background: transparent;
+            color: #4b5563;
+            border: none;
+            cursor: pointer;
+            margin: 10px auto 0px;
+            display: block;
+        }
+
+        .expand-btn:hover {
+            text-decoration: underline;
+        }
     </style>
     <script>
+        function toggleCard(button) {
+            const details = button.previousElementSibling;
+            const isOpen = details.classList.contains("open");
+
+            details.classList.toggle("open");
+            button.textContent = isOpen ? "show details" : "hide details";
+        }
+
+
         window.onload = function () {
             const xhr = new XMLHttpRequest()
             xhr.onload = function () {
@@ -315,7 +352,7 @@
                         const formatted_data = `${date.getFullYear()} ${date.toLocaleString("en-US", { month: "short" }).toUpperCase()
                             } ${String(date.getDate()).padStart(2, "0")}`;
                         const detailsText = document.createElement("p");
-                        detailsText.classList.add("movie-details");
+                        detailsText.classList.add("meta-data");
                         detailsText.innerHTML = `
                             <span class="label">Runtime</span> 
                             <span class="value">${movie.runtime} min</span>
@@ -335,12 +372,25 @@
                         });
                         article.append(genres);
 
+
+                        const movieDetails = document.createElement("div");
+                        movieDetails.classList.add("movie-details");
+                        article.append(movieDetails);
+
+                        const expandButton = document.createElement("button");
+                        expandButton.classList.add("expand-btn");
+                        expandButton.textContent = "show details";
+                        expandButton.addEventListener("click", () => toggleCard(expandButton));
+                        article.append(expandButton);
+
+
+                        // Movie Details:
                         // Plot summary
                         const plot = document.createElement("p");
                         plot.classList.add("movie-plot");
                         plot.classList.add("scrollable");
                         plot.textContent = movie.plot;
-                        article.append(plot);
+                        movieDetails.append(plot);
 
                         // Ratings as pills
                         const ratingsText = document.createElement("div");
@@ -349,7 +399,7 @@
                         <span class="rating-badge imdb">IMDb ${movie.imdbRating}/10</span>
                         <span class="rating-badge metascore">Metascore ${movie.metascore}</span>
                         `;
-                        article.append(ratingsText);
+                        movieDetails.append(ratingsText);
 
 
                         // Credits section with tabs
@@ -422,9 +472,9 @@
                             });
                         });
 
-                        article.append(document.createElement("hr")); // Add a horizontal rule for separation
-                        article.append(tablist);
-                        panels.forEach(({ panel }) => article.append(panel));
+                        movieDetails.append(document.createElement("hr")); // Add a horizontal rule for separation
+                        movieDetails.append(tablist);
+                        panels.forEach(({ panel }) => movieDetails.append(panel));
 
                         movieCardContainer.append(article);
                     });
