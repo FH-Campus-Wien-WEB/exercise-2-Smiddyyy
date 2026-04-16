@@ -55,3 +55,18 @@ module.exports = {
   listStoredMovies,
   normalizeMovieData
 };
+
+
+// --- showcase ---
+// model = {
+//     "tt1375666": {
+//         "imdbID": "tt1375666",
+//         "title": "Sample Movie",
+//         "released": "2010-07-15",
+//     },
+//     "tt0172495": {
+//         "imdbID": "tt0172495",
+//         "title": "Sample Movie 2",
+//         "released": "2000-05-04",
+//     }
+// }

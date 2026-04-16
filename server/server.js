@@ -69,7 +69,7 @@ app.put('/movies/:imdbID', async function (req, res) {
       .catch(() => false);
 
     await writeJSON(`${imdbID}.json`, movie);
-
+    
     if (fileExists) {
       res.status(200).json({ status: 'success', message: 'Movie updated successfully' });
     } else {
@@ -80,7 +80,6 @@ app.put('/movies/:imdbID', async function (req, res) {
     res.status(500).json({ error: 'Failed to save movie' });
   }
 });
-
 
 // Custom endpoint to fetch a new movie from the OMDB API and save it to a JSON file.
 app.post('/fetch-new-movie', async function (req, res) {
@@ -126,6 +125,15 @@ app.post('/fetch-new-movie', async function (req, res) {
     res.status(500).json({ error: err.message });
   }
 });
+
+// --- showcase ---
+// const movieModule = require('./movie-model.js');
+// if (!('tt1375666' in movieModule.model)) {
+//   // foo
+// } else {
+//   // bar
+// }
+
 
 app.listen(3000)
 
