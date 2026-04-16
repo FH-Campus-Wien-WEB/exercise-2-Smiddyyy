@@ -2,55 +2,11 @@ const express = require('express')
 const path = require('path')
 const fs = require('fs/promises');
 const { writer } = require('repl');
+const { writeJSON, readJSON, listStoredMovies, normalizeMovieData } = require('./movie-model.js');
 
 require('dotenv').config();
 
 const app = express()
-
-// ---------------
-// helpers methods
-// ---------------
-
-async function writeJSON(filename, data) {
-  await fs.mkdir('data', { recursive: true });
-  await fs.writeFile(`data/${filename}`, JSON.stringify(data, null, 2));
-}
-
-async function readJSON(filename) {
-  try {
-    const raw = await fs.readFile(`data/${filename}`, 'utf-8');
-    const data = JSON.parse(raw);
-    return data;
-  } catch (err) {
-    console.error("Invalid JSON in file:", filename);
-    return null;
-  }
-}
-
-async function listStoredMovies() {
-  return fs.readdir('data')
-    .then(files => files.filter(file => file.endsWith('.json')))
-    .catch(err => {
-      console.error("Error reading directory:", err);
-      return [];
-    });
-}
-
-function normalizeMovieData(movie) {
-  return {
-    title: movie.Title,
-    released: new Date(movie.Released).toISOString().split('T')[0], // in ISO 8601 format
-    runtime: parseInt(movie.Runtime), // as number ("142 min" -> 142)
-    genres: movie.Genre.split(', ').map(s => s.trim()), // as array of strings ("Action, Adventure, Sci-Fi" -> ["Action", "Adventure", "Sci-Fi"])
-    directors: movie.Director.split(', ').map(s => s.trim()), // as array of strings ("Lana Wachowski, Lilly Wachowski" -> ["Lana Wachowski", "Lilly Wachowski"])
-    actors: movie.Actors.split(', ').map(s => s.trim()), // as array of strings ("Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss" -> ["Keanu Reeves", "Laurence Fishburne", "Carrie-Anne Moss"])
-    writers: movie.Writer.split(', ').map(s => s.trim()), // as array of strings ("Lana Wachowski, Lilly Wachowski" -> ["Lana Wachowski", "Lilly Wachowski"])
-    plot: movie.Plot,
-    poster: movie.Poster,
-    metascore: parseInt(movie.Metascore), // as number
-    imdbRating: parseFloat(movie.imdbRating) // as number
-  }
-}
 
 // ---------------
 // Main server code
@@ -76,23 +32,35 @@ app.get('/movies', async function (req, res) {
   }
 });
 
-app.post('/fetch-new-movie', async (req, res) => {
+// Configure a 'get' endpoint for a specific movie
+app.get('/movies/:imdbID', async function (req, res) {
+  try {
+    const imdbID = req.params.imdbID;
+    const movie = await readJSON(`${imdbID}.json`);
+    if (!movie) {
+      return res.status(404).json({ error: 'Movie not found' });
+    }
+    res.json(movie);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'internal: failed to read movie' });
+  }
+});
+
+/* Task 3.1 and 3.2.
+   - Add a new PUT endpoint
+   - Check whether the movie sent by the client already exists 
+     and continue as described in the assignment */
+
+
+// Custom endpoint to fetch a new movie from the OMDB API and save it to a JSON file.
+app.post('/fetch-new-movie', async function (req, res) {
   //This endpoint will fetch a new movie from the OMDB API and save it to a JSON file.
   try {
     const title = req.query.title;
 
     if (!title) {
       return res.status(400).send('missing query parameter: title');
-    }
-
-    // sanitize filename
-    const safeTitle = title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-
-    // check if movie already exists in JSON files
-    if (await fs.access(`data/${safeTitle}.json`)
-      .then(() => true)
-      .catch(() => false)) {
-      return res.status(200).json({ "status": "success", "msg": "Movie already exists" });
     }
 
     // Call OMDB API
@@ -113,14 +81,22 @@ app.post('/fetch-new-movie', async (req, res) => {
     }
 
     // normalize and save movie data to JSON file
-    movie = normalizeMovieData(data);
-    await writeJSON(`${safeTitle}.json`, movie);
+    const movie = normalizeMovieData(data);
+
+    // check if movie already exists in JSON files
+    if (await fs.access(`data/${movie.imdbID}.json`)
+      .then(() => true)
+      .catch(() => false)) {
+      return res.status(200).json({ "status": "success", "msg": "Movie already exists" });
+    }
+
+    await writeJSON(`${movie.imdbID}.json`, movie);
 
     res.status(201).json({ "status": "success", "msg": "Movie added successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-})
+});
 
 app.listen(3000)
 
