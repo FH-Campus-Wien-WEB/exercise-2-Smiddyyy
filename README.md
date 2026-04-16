@@ -1,90 +1,78 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/j6KIeYER)
-# Web Technologies - Exercise 1
+[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/dpELSpGq)
+# Web Technologies - Exercise 2
 
-This first exercise in Web Technologies consists of three parts. You will implement the first one on the server-side and the other two on the client-side. You find detailed information about these parts in the **Tasks** section below.
+The second exercise in Web Technologies extends your movie application from Exercise 1. The goal is to make movie data editable: you will restructure how movies are stored on the server, add an edit page with a form, and implement saving changes back to the server.
 
-Before you start, you will have to set up the development environment. First and foremost, install [**Node.js**](https://nodejs.org/en/). Then, clone the repository that GitHub Classroom generated for you. Since you read this, this is most likely where you are now :).
+As before, the work is split across **server-side** and **client-side** code. You find detailed information in the **Tasks** section below.
 
-Now configure an IDE, we recommand using [**WebStorm**](https://www.jetbrains.com/webstorm/) or [**Visual Studio Code**](https://code.visualstudio.com/). Finally, you need to install the dependencies of this project. In the project's root directory (where this <span style="font-family:Lucida Sans Typewriter">README</span> file is located), run
+## Important: Reusing your work from Exercise 1 (strongly recommended)
+
+This repository contains **skeleton code** to get you started. It includes working file structure, some starter JavaScript, and some **basic styling** for the pages (e.g., `base.css`, `index.css`, `edit.css`). The skeleton is meant to provide a solid baseline and to help you recover if something went wrong in Exercise 1.
+
+However, if your solution from Exercise 1 is working, we **strongly recommend** that you build on top of it:
+
+- Bring over your **client-side rendering** from Exercise 1 (HTML structure + DOM manipulation).
+- Bring over your **styling** from Exercise 1 (CSS). Even if the skeleton includes some basic CSS, your own styling is part of your work and you should keep it if possible.
+- Bring over (and adapt) your **server-side implementation** from Exercise 1, especially your `GET /movies` endpoint and any data formatting you already implemented in `server.js`.
+
+In other words: use this repository as the *starting framework*, but try to continue from your own working codebase. If you copy files over, make sure you understand what you are replacing and keep the parts of the skeleton that are helpful (for example: the new files related to editing, the provided CSS files, and the general folder structure).
+
+## Setup
+
+Before you start, set up your environment the same way as in Exercise 1. Clone your GitHub Classroom repository, open it in an IDE (WebStorm or VS Code recommended), and install dependencies in the project root directory (where this `README.md` file is located):
 
     npm install
 
-The project consists of a server, which is implemented using **Node.js** and a client, which will be your favorite web browser.
-
-To be able to access the application using a browser, you will have to start the server. To do so, you have two options. The first one is to run it using the start script:
+To start the server, you can run:
 
     npm start
 
-When using the start script, remember that you need to *restart the server whenever you make changes* to your project!
+When using the start script, remember that you need to *restart the server whenever you make changes* to your project.
 
-To avoid restarting the server manually each time after making a change, there is a second, **recommended** option. This option is to start the server using [`nodemon`](https://www.npmjs.com/package/nodemon). `nodemon` will not only start your server, but also monitor your code for changes you make. As a consequence, when using `nodemon`, you do not have to restart your server when making changes, which is quite helpful during development.
+To avoid restarting the server manually each time after making a change, use [`nodemon`](https://www.npmjs.com/package/nodemon) (recommended). `nodemon` monitors your code for changes and restarts the server automatically.
 
-There is no need to install `nodemon` explicitely, it is already a development dependency of the project you cloned.
+There is no need to install `nodemon` explicitly, it is already a development dependency of the project you cloned.
 
-To run your server using `nodemon`, you can use the `start-nodemon` script by running
+To start the server using `nodemon`, run:
 
     npm run start-nodemon
 
-Whichever option you choose, after starting the server you should see the message
+Whichever option you choose, after starting the server you should see:
 
     Server now listening on http://localhost:3000/
 
-in your terminal. Visit [http://localhost:3000/](http://localhost:3000/) using your favorite Web Browser to test the application. You will see a simple message from the server displayed on the page:
-
-    Hello world!
+Visit [http://localhost:3000/](http://localhost:3000/) in your browser to test the application manually.
 
 ## Project structure
 
-For the time being, the application consists of only one file on both sides. On the server-side, the file is `server/server.js`, on the client side, the file is `server/files/index.html`. 
+Compared to Exercise 1, the project is now a bit larger.
 
-First, have a look at `server/server.js`, maybe you can guess the responsibilities of the individual blocks of code. For now, there are two blocks that are of interest to you when implementing this exercise.
+### Server-side
+- `server/server.js` contains startup code and the endpoints
+- `server/movie-model.js` will contain the data structure in which the movies are stored
 
-The first one is:
-
-```js
-    app.get('/movies', function (req, res) {
-        res.send('!dlrow olleH')
-    })
-```
-
-This blocks tells the server to send the string `!dlrow olleH` to a client making a `GET` request to the path `/movies`. You can check that the server is doing that by accessing [http://localhost:3000/movies](http://localhost:3000/movies). You will see the original, reversed data that the server sends. 
-
-The second part of `server.js` of interest to you is
-
-```js
-    app.use(express.static(path.join(__dirname, 'files')));
-```
-
-This part tells the server to serve all files located in the `files` directory to a client requesting them. We are making use of so-called middleware to accomplish that. For now you do not need to understand how this works in detail, we are going to talk about middleware in future classes. The thing you need to understand is this is how we configure that the `index.html` file located in the `files` directory on the server-side is being sent to a client upon request.
-
-Now, browse the application again by pointing a browser to [http://localhost:3000/](http://localhost:3000/) and **open the page source**. You will find the contents of `server/files/index.html`. Our middleware is working.
-
-If you look closely near the end of the `index.html`, you will find the lines
-
-```js
-    xhr.open("GET", "/movies")
-    xhr.send()
-```
-
-which are requesting the movie data from the server by making the `GET` request mentioned above. Again, you do not need to understand the details of how this works on the client-side, the only interesting part is the following line
-
-```js
-    bodyElement.append(reverseString(xhr.responseText))
-```
-
-That's were the data received from the server is added to the page. The `responseText` property of the `xhr` variable contains the content that was sent by the server - the reversed message `!dlrow olleH`. The client then uses the function `reverseString` (which you find a few lines above) to reverse the string and the `append` method of the html element of the body of the page to add the reversed message to the body. That's how the message from the server ends up on our web page when we open the application.
+### Client-side
+- `server/files/index.html` the overview page showing all movies
+- `server/files/index.js` holds the JavaScript code for `index.html`
+- `server/files/index.css` contains the stylesheet for `index.html`
+- `server/files/edit.html` the edit page for a single movie
+- `server/files/edit.js` holds the JavaScript code for `edit.html` (most of which already exists)
+- `server/files/edit.css` is ready for you to use in `edit.html` and contains styling for the form
+- `server/files/base.css` contains a base stylesheet, used in `index.css` and in `edit.css`
 
 ## Tasks
-As mentioned at the beginning, this exercise consists of three parts:
 
-1. **Part 1: Returning the movie data from the `/movies` endpoint (1 point)**  
-   Implement the server-side endpoint in `server/server.js` so that `/movies` returns an array of **at least three** movie objects in **valid JSON**, based on OMDb API example data (trimmed and reformatted as specified).
+This exercise consists of three larger tasks:
 
-2. **Part 2: Rendering the movie data on the client side (3 points)**  
-   In `server/files/index.html`, parse the JSON returned by the server, loop over the movie array, and dynamically create **semantic HTML elements** that display **all** required movie information. Append the created elements to the page body.
+1. **Part 1: Move the movie data to the movie model (2 point)**
 
-3. **Part 3: Styling the page (2 points)**  
-   Add CSS rules in the `<style>` element in the `<head>` of `server/files/index.html` to improve the look and layout of the rendered movie information (you may follow the suggested styling rules and/or extend them creatively).
+   In the first task you will change the way in which the movies are stored on the server. You move the movie data to the movie model module `server/movie-model.js`. Then you re-implement `GET /movies` to return the movies from that module. Finally, you update the overview rendering to include an *Edit* button for each movie.
+2. **Part 2: Add a form to edit a movie (2 points)**
+
+   In the second task you will build your first `form`. The user will be able to edit the data of one specific movie. For this to work you will add a new endpoint `GET /movies/:imdbID`, implement navigation from the overview to a new `edit.html` page, and create the form in `edit.html`.
+3. **Part 3: Store the modified movie data on the server (2 points)**
+
+   In the third task you will implement saving: the user modifies the form and clicks *Save*, which triggers a `PUT /movies/:imdbID` request to update (or create) the movie on the server.
 
 ### Important: Presentation Requirement
 
@@ -95,106 +83,220 @@ As mentioned at the beginning, this exercise consists of three parts:
 
 Make sure you understand what your code does and why you made certain decisions!
 
-### Part 1: Returning the movie data from the /movies endpoint
+## Checking your implementation
 
-In this first part of the assignment, you have to structure movie data in JSON. Choose **at least three movies** of your liking and use the **Examples** section of the [OMDb API](https://www.omdbapi.com/) to retrieve the data for these movies in JSON format.
+In this exercise you should primarily verify your solution **by using the application in the browser** (and optionally using DevTools / the Network tab).
 
-For example, this is the data returned when searching for *The Thing*:
+Recommended checks:
+- Does the overview show all movies?
+- Does the *Edit* button navigate to the correct movie?
+- Does the edit form show existing values?
+- Do *Save* and *Cancel* behave as expected?
+- If you reload the page, do you still see the updated values?
 
-```json
-{"Title":"The Thing","Year":"1982","Rated":"R","Released":"25 Jun 1982","Runtime":"109 min","Genre":"Horror, Mystery, Sci-Fi","Director":"John Carpenter","Writer":"Bill Lancaster, John W. Campbell Jr.","Actors":"Kurt Russell, Wilford Brimley, Keith David","Plot":"A research team in Antarctica is hunted by a shape-shifting alien that assumes the appearance of its victims.","Language":"English, Norwegian","Country":"United States, Canada","Awards":"3 nominations","Poster":"https://m.media-amazon.com/images/M/MV5BNGViZWZmM2EtNGYzZi00ZDAyLTk3ODMtNzIyZTBjN2Y1NmM1XkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_SX300.jpg","Ratings":[{"Source":"Internet Movie Database","Value":"8.2/10"},{"Source":"Rotten Tomatoes","Value":"84%"},{"Source":"Metacritic","Value":"57/100"}],"Metascore":"57","imdbRating":"8.2","imdbVotes":"430,351","imdbID":"tt0084787","Type":"movie","DVD":"14 Feb 2006","BoxOffice":"$19,629,760","Production":"N/A","Website":"N/A","Response":"True"}
+If you want, you can also verify individual endpoints directly in the browser:
+- `GET /movies` should return valid JSON with all movies
+- `GET /movies/<imdbID>` should return one movie (or 404 if not found)
+
+---
+
+## Task 1: Move the movie data to the movie model
+
+### 1.1 Store movies in `movie-model.js` as an object (keyed by `imdbID`)
+
+In `movie-model.js`, store movies in a JavaScript object where:
+- the **key** is the `imdbID`
+- the **value** is the full movie object (same structure as in Exercise 1)
+
+Include **at least three movies**.
+
+One entry could look like this:
+
+```js
+tt0084787: {
+  imdbID: `tt0084787`,
+  Title: `The Thing`,
+  Released: `1982-06-25`,
+  Runtime: 109,
+  Genres: [`Horror`, `Mystery`, `Sci-Fi`],
+  Directors: [`John Carpenter`],
+  Writers: [`Bill Lancaster`, `John W. Campbell Jr.`],
+  Actors: [`Kurt Russell`, `Wilford Brimley`, `Keith David`],
+  Plot: `A research team in Antarctica is hunted by a shape-shifting alien that assumes the appearance of its victims.`,
+  Poster: `https://m.media-amazon.com/images/M/MV5BNGViZWZmM2EtNGYzZi00ZDAyLTk3ODMtNzIyZTBjN2Y1NmM1XkEyXkFqcGdeQXVyNTAyODkwOQ@@._V1_SX300.jpg`,
+  Metascore: 57,
+  imdbRating: 8.2,
+}
 ```
 
-Pick the following information from the data structure and delete the rest:
+Make sure to `export` the complete movies object from the `movie-model.js` module so that `server.js` can use it (the import is already included in the skeleton code).
 
-1. Title
-1. Released
-1. Runtime
-1. Genre
-1. Director
-1. Writer
-1. Actors
-1. Plot
-1. Poster
-1. Metascore
-1. imdbRating
+**Verify your implementation:** quickly inspect the model in a debugger or add a `console.log` temporarily to ensure the structure is what you expect.
 
-You may have noticed that all properties have String values, even numerical data like *Metascore*. In the next step, do the following renaming and reformatting:
+### 1.2 Update `GET /movies` in `server.js`
 
-1. Rename *Genre*, *Director*, *Writer* to their plural forms to be consistent with *Actors*
-1. Reformat *Released* to be in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format
-1. Reformat *Runtime* to be an number (remove the unit **min** in the process)
-1. Reformat *Genres* to be an array of genres and not a comma-separated string of genres
-1. Do the same you did with *Genres* with *Directors*, *Writers*, and *Actors*, that is, convert them into an array of strings
-1. Reformat *Metascore* to be a number
-1. Reforamt *imdbRating* to be a number
+Re-implement the endpoint `GET /movies` so that it returns **all movies as an array** (even though they are stored as an object).
 
-Finally, put all the movies you chose in one JSON array and return that array instead of the `!dlrow olleH` string. To be precise, the array you return will contain three objects each of which represents the data of one movie.
+Tip: you can use [`Object.values(...)`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Object/values).
 
-**Verify your implementation by checking the `/movies` endpoint in your browser and ensuring valid JSON is returned.**
+**Verify your implementation:** open [http://localhost:3000/movies](http://localhost:3000/movies) in the browser and check that valid JSON is returned and contains your movies.
 
-### Part 2: Rendering the movie data on the client side
+### 1.3 Render movies in `index.js` (including an Edit button)
 
-In this part you will have to dynamically add new HTML elements to the `body` of the application's HTML page. Before you can use the information, you will have to find a way to parse the JSON data into JavaScript objects.
+Move (or recreate) your rendering code from Exercise 1 into `server/files/index.js`.
 
-Your task is to:
-1. Parse the JSON movie data received from the server into JavaScript objects
-2. Loop through each movie object in the array
-3. For each movie, dynamically create HTML elements that display all the movie information
-4. Append these elements to the page body
+Then extend your rendering so that each movie includes an **Edit** button.
 
-**Important**: Think carefully about which HTML elements best represent the semantic meaning of your content. HTML provides many different tags, each with its own purpose and meaning. Choosing the right semantic elements will make your page more accessible, easier to style, and better structured.
+Also, make sure that the element representing a movie has its IMDB id set as its `id` attribute.
 
-To help you understand semantic HTML and available HTML elements, here are some valuable resources:
+**Verify your implementation:** reload [http://localhost:3000/](http://localhost:3000/) and check that:
+- all movies appear
+- each movie has an *Edit* button
+- the movie elements have the correct `id` attributes (you can check this in DevTools)
 
-1. [MDN: HTML elements reference](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) - A comprehensive guide to all HTML elements and their purposes
-2. [Web.dev: Semantic HTML](https://web.dev/learn/html/semantic-html/) - Learn why semantic HTML matters and how to use it effectively
+---
 
-Make sure all movie information from Part 1 is displayed on the page in a clear and organized manner.
+## Task 2: Add a form to edit a movie
 
-Here's a screenshot of what your application might look like after implementing this part (your structure may vary):
+### 2.1 Add `GET /movies/:imdbID` in `server.js`
 
-![Part 2 example implementation shown Chrome](images/Part2-done.png "Part 2 implementation shown in Chrome")
+Implement the endpoint `GET /movies/:imdbID`.
 
-**Check your implementation by viewing the application in your browser and verifying all movie data is displayed correctly.**
+The client passes the `imdbID` as a **path parameter**. You can access it in the endpoint code using:
 
-### Part 3: Styling the page
+- `req.params.imdbID`
 
-In this final part you will add some styling by applying CSS. You will add CSS rules to the `style` element in the `head` of the page. 
+Then:
+- If you find the movie, send it to the client using `res.send(...)`
+- If you do not find the movie, respond with status **404** (e.g., using `res.sendStatus(404)`)
 
-Here are **suggestions** for styling rules you could add. Feel free to be creative and adjust these to your liking:
+**Verify your implementation:**
+- Open `http://localhost:3000/movies/<someExistingImdbID>` and check you receive JSON
+- Try a non-existing id and check the server responds with 404
 
-1. **body**
-    1. Set a `font-family` (e.g., `'Trebuchet MS'`, `sans-serif`, or your favorite fonts)
-1. **img**
-    1. Add a `border-radius` to round the corners
-    1. Consider setting a `max-width` so images don't get too large
-1. **h1**
-    1. Set a `font-weight` (e.g., bold)
-    1. Add some `margin` for spacing
-1. **article**
-    1. Set a `background-color` of your liking
-    1. Add a `border-radius` for rounded corners
-    1. Add some `margin` to separate movies from each other
-    1. Add `padding` for inner spacing
-    1. Consider adding a `box-shadow` for depth
-1. **span**
-    1. Add a small right `margin` for spacing between elements
-1. Style for the genre tags (the **span** elements with class *genre*). Use a [class selector](https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors)!
-    1. Set a `background-color` to make them stand out
-    1. Add `padding` for inner spacing
-    1. Add `border-radius` for rounded corners
-    1. Optionally add a `border`
-    1. Consider using `display: inline-block` for better control
+### 2.2 Navigation between `index.html` and `edit.html`
 
-**Feel free to add more styling rules and make the page your own!** Consider adding:
-- Hover effects
-- Different colors for different elements
-- Better spacing and layout
-- Responsive design elements
+Now you connect the overview page to a new edit page.
 
-In the end, your application could look something like this (or completely different based on your creativity):
+#### From `index.html` to `edit.html`
+Add a click handler to each movie’s *Edit* button. The handler should navigate to `edit.html` and pass the movie id as a **query parameter**:
 
-![Exercise 1 example implementation shown Chrome](images/Part3-done.png "Exercise 1 implementation shown in Chrome")
+```js
+location.href = "edit.html?imdbID=tt1234567"
+```
 
-**Congratulations on finishing the first exercise!** Make sure to test your application thoroughly and be ready to present your work in the next meeting.
+Because the buttons are created dynamically in `index.js`, this also needs to be done dynamically. For example:
+
+```js
+const buttonElement = document.createElement('button')
+buttonElement.textContent = 'Edit'
+buttonElement.onclick = function() {
+  location.href = 'edit.html?imdbID=' + movie.imdbID
+}
+```
+
+#### From `edit.html` back to `index.html`
+Add a *Cancel* button in `edit.html` that navigates back to the overview page, e.g.:
+
+- `location.href = "index.html"`
+
+**Verify your implementation:** click *Edit* on a movie, then click *Cancel* and ensure you return to the overview page.
+
+### 2.3 Build the form in `edit.html`
+
+In this part you create the edit page and build the form **statically in HTML** (this time you do not generate the form using `document.createElement(...)`).
+
+Create a `form` element (and put the *Cancel* button inside the form). Then add form fields for all movie properties. Use appropriate elements:
+- `input` elements for strings, numbers, dates, urls, and also for your list fields like Actors/Writers/Directors (as text inputs)
+- a `select` element for genres
+- a `textarea` for the plot
+
+Guidelines:
+- Wrap each visible form field in a `div`
+- Add a `label` for each field
+- Each `label` must have a `for` attribute pointing to the `id` of its input element
+- Use the property name as the `id` (e.g., `id="Title"`, `id="Released"`, ...)
+- Use `required` for fields (recommended: all fields)
+
+#### Special case: `imdbID`
+The `imdbID` is not editable. Use an `input` with `type="hidden"` and `id="imdbID"`. Since it is hidden, you do not need a `div` or a label, but make sure the `id` exists.
+
+#### `select` element for genres
+Add a `<select id="Genres" multiple required>` element. It should include the following 24 genres as `<option>` elements:
+
+`Action`, `Adventure`, `Animation`, `Biography`, `Comedy`, `Crime`, `Documentary`, `Drama`, `Family`, `Fantasy`, `Film Noir`, `History`, `Horror`, `Music`, `Musical`, `Mystery`, `Romance`, `Sci-Fi`, `Short Film`, `Sport`, `Superhero`, `Thriller`, `War`, `Western`
+
+Example:
+
+```html
+<select id="Genres" multiple required>
+  <option value="Action">Action</option>
+  <option value="Adventure">Adventure</option>
+  <option value="Animation">Animation</option>
+  ...
+</select>
+```
+
+Wrap the select element in a `div` and add a label, the same as with inputs.
+
+#### `textarea` for plot
+Add a `<textarea id="Plot" rows="5" required></textarea>` (also wrapped in a `div` with a label).
+
+#### Buttons
+At the end of the form, add two buttons:
+- **Save**: calls the JavaScript function `putMovie()` via `onclick`. Be sure to set `type="button"` (otherwise it behaves like a submit button).
+- **Cancel**: navigates back to `index.html` (as in 2.2)
+
+Finally: include `edit.js` in `edit.html`, so the movie data is loaded and inserted into the form.
+
+**Verify your implementation:** click *Edit* for a movie. The form should appear and be filled with the movie data.
+
+### 2.4 Include the provided stylesheet
+
+Reference the given `edit.css` file in `edit.html`.
+
+**Verify your implementation:** reload `edit.html` and check that the form styling is applied.
+
+---
+
+## Task 3: Store the modified movie data on the server
+
+In this task you implement saving.
+
+There are two cases:
+- You `PUT` a modified movie with an `imdbID` that already exists → update
+- You `PUT` a new movie with an `imdbID` that does not exist yet → creation
+
+Both cases are handled by one endpoint: `PUT /movies/:imdbID`.
+
+### 3.1 Update an existing movie (`server.js`)
+
+In `server.js`, implement `PUT /movies/:imdbID`.
+
+If the `imdbID` already exists in the server-side model:
+- replace the existing movie data with the received movie data
+- respond with status code **200** (using `res.sendStatus(...)`)
+
+**Verify your implementation:** edit an existing movie, save it, go back to the overview, and confirm the change is visible.
+
+### 3.2 Create a new movie (`server.js`)
+
+If the `imdbID` does not exist:
+- add the received movie to your server-side model
+- respond with status code **201** and send back the movie object you stored
+
+**Verify your implementation (optional but recommended):** try sending a new movie via DevTools / REST client / code and check it appears in `GET /movies`.
+
+### 3.3 Trigger the PUT request from the client (`edit.js`)
+
+In `edit.js`, complete the function `putMovie()` so that it sends the movie data from the form to:
+
+- `PUT /movies/:imdbID`
+
+Some code is already there, but you will need to find the missing pieces and decide how you want to handle the result (for example, navigating back to the overview after saving).
+
+**Verify your implementation:** edit a movie, click *Save*, and confirm the changes are reflected when you return to the overview.
+
+---
+
+**Congratulations on finishing the second exercise!** Make sure to test your application thoroughly and be ready to present your work in the next meeting.
