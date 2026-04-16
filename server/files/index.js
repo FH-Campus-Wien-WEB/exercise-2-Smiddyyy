@@ -44,6 +44,9 @@ window.onload = function () {
                 </svg>`;
                 editButton.setAttribute("aria-label", `Edit ${movie.title} movie details`);
                 editButton.setAttribute("title", `Edit ${movie.title}`);
+                editButton.onclick = function() {
+                    window.open('edit.html?imdbID=' + movie.imdbID, '_blank', 'width=500,height=800');
+                };
 
                 titleRow.append(editButton);
                 header.append(titleRow);

@@ -72,7 +72,6 @@
                 <label for="poster">Poster URL:</label>
                 <input type="url" id="poster" value="" required/>
             </div>
-            //metascore, imdbRating
             <div>
                 <label for="metascore">Metascore:</label>
                 <input type="number" id="metascore" value="" required/>
@@ -81,8 +80,10 @@
                 <label for="imdbRating">IMDb Rating:</label>
                 <input type="number" step="0.1" id="imdbRating" value="" required/>
             </div>
-            <button onclick="window.close()">Cancel</button>
-            <button type="submit">Save</button>
+            <div class="buttons-container">
+                <button onclick="window.close()" class="cancel-btn">Cancel</button>
+                <button onclick="putMovie()" type="button" class="save-btn">Save</button>
+            </div>
         </form>
     </body>
 </html>

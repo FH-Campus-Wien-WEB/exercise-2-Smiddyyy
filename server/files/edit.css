@@ -1,11 +1,143 @@
 @import url(base.css);
 
-input,
-select,
-textarea {
-  width: 100%;
+/* Page layout */
+body {
+    font-family: Inter, system-ui, sans-serif;
+    background: lightgrey;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 20px;
 }
 
+/* Main form container */
+form {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 24px;
+    max-width: 500px;
+    width: 100%;
+    min-width: 300px;
+    backdrop-filter: blur(10px);
+}
+
+/* Form sections */
 div {
-  margin: 4px 0px;
+    margin-bottom: 16px;
+}
+
+/* Labels */
+label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 8px;
+    letter-spacing: 0.025em;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+input[type="url"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: inherit;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Select multiple styling */
+select[multiple] {
+    min-height: 120px;
+    background-image: none;
+}
+
+/* Textarea specific styling */
+textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+}
+
+/* Hidden input */
+input[type="hidden"] {
+    display: none;
+}
+
+/* Button container */
+.buttons-container{
+    margin-top: 20px auto 10px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Buttons */
+button {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    width: 100px;
+}
+
+.save-btn {
+    background: #8b5cf6;
+    color: #ffffff;
+    margin-left: 20px;
+}
+
+.save-btn:hover {
+    background: #7c3aed;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.save-btn:active {
+    transform: translateY(0);
+}
+
+.cancel-btn {
+    background: #f3f4f6;
+    color: #6b7280;
+    border-color: #d1d5db;
+}
+
+.cancel-btn:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* Form validation styling */
+input:invalid,
+select:invalid,
+textarea:invalid {
+    border-color: #ef4444;
+}
+
+input:invalid:focus,
+select:invalid:focus,
+textarea:invalid:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }

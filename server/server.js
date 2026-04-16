@@ -8,6 +8,9 @@ require('dotenv').config();
 
 const app = express()
 
+// Parse JSON bodies
+app.use(express.json());
+
 // ---------------
 // Main server code
 // ---------------
@@ -47,10 +50,36 @@ app.get('/movies/:imdbID', async function (req, res) {
   }
 });
 
-/* Task 3.1 and 3.2.
-   - Add a new PUT endpoint
-   - Check whether the movie sent by the client already exists 
-     and continue as described in the assignment */
+app.put('/movies/:imdbID', async function (req, res) {
+  const imdbID = req.params.imdbID;
+  const movie = req.body;
+
+  if (!movie) {
+    return res.status(400).json({ error: 'invalid movie data' });
+  }
+
+  // Ensure the movie has the correct imdbID
+  movie.imdbID = imdbID;
+
+  console.log("Received movie data for update:", movie);
+
+  try {
+    const fileExists = await fs.access(`data/${imdbID}.json`)
+      .then(() => true)
+      .catch(() => false);
+
+    await writeJSON(`${imdbID}.json`, movie);
+
+    if (fileExists) {
+      res.status(200).json({ status: 'success', message: 'Movie updated successfully' });
+    } else {
+      res.status(201).json(movie);
+    }
+  } catch (err) {
+    console.error('Error saving movie:', err);
+    res.status(500).json({ error: 'Failed to save movie' });
+  }
+});
 
 
 // Custom endpoint to fetch a new movie from the OMDB API and save it to a JSON file.
