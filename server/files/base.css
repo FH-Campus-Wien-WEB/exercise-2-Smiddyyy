@@ -48,7 +48,7 @@ body {
 .scrollable-fade::after {
     content: "";
     position: absolute;
-    bottom: 22px;
+    bottom: 60px;
     left: 0;
     right: 0;
     height: 30px;

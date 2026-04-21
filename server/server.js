@@ -23,8 +23,19 @@ app.get('/movies', async function (req, res) {
   // accept optional query parameter 'genre' to filter movies by genre (e.g. /movies?genre=Action)
   // can be used multiple times to filter by multiple genres (e.g. /movies?genre=Action,Sci-Fi)
   const genreFilter = req.query.genre;
-  const genreFilters = genreFilter ? genreFilter.split(',').map(s => s.trim()) : null;
-  console.log("Received request for movies with genre filters:", genreFilters);
+  const genreFilters = genreFilter
+  ? genreFilter.split(',').map(s => s.trim())
+  : null;
+  if (genreFilters){
+    console.log("Received request for movies with genre filters:", genreFilters);
+  }
+  
+  const titleFilter = req.query.title
+  ? req.query.title.toLowerCase().trim()
+  : null;
+  if (titleFilter){
+    console.log("Received request for movies with title filter:", titleFilter);
+  }
 
   // This endpoint will return a list of all movies stored in the JSON files (returns json data as list).
   try {
@@ -34,10 +45,25 @@ app.get('/movies', async function (req, res) {
       files.map(file => readJSON(file))
     )).filter(movie => movie !== null) // filter out any files that failed to read;
       .filter(movie => {
-        if (!genreFilters) return true;
-        // check if atleast one of the movie's genres is in the genreFilters list
-        return movie.genres.some(genre => genreFilters.includes(genre));
-      });
+        // genre filter
+        if (genreFilters) {
+          const hasAllGenres = genreFilters.every(filter =>
+            movie.genres.includes(filter)
+          );
+          if (!hasAllGenres) return false;
+        }
+
+        // title filter
+        if (titleFilter) {
+          const matchesTitle = movie.title
+            .toLowerCase()
+            .includes(titleFilter);
+          if (!matchesTitle) return false;
+        }
+
+        return true;
+      }
+    );
 
     res.json(movies);
   } catch (err) {

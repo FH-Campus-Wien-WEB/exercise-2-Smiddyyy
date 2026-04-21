@@ -3,18 +3,23 @@
 body>aside {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 75px 1fr;
+    grid-template-rows: 75px 50px 1fr;
 
     grid-template-areas:
         "header"
-        "filters";
+        "title"
+        "genre";
 
     transition: grid-template-columns 0.3s ease;
 }
 
 /* Areas */
 #genre-filters {
-    grid-area: filters;
+    grid-area: genre;
+}
+
+#search-filter{
+    grid-area: title;
 }
 
 #sidebar-header {
@@ -73,4 +78,41 @@ body>aside {
     color: #cfcfcf;
     margin-left: 4px;
     cursor: pointer;
+}
+
+#search-filter > div {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: #f3f4f6;
+    border-radius: 999px;
+    padding: 6px 12px;
+
+    border: 1px solid #d1d5db;
+    transition: all 0.2s ease;
+}
+
+#search-filter > div:focus-within {
+    border-color: #712f71;
+    box-shadow: 0 0 0 2px rgba(113, 47, 113, 0.2);
+}
+
+#search-input {
+    border: none;
+    outline: none;
+    background: transparent;
+
+    font-size: 1rem;
+    flex: 1;
+    color: #111827;
+}
+
+#search-input::placeholder {
+    color: #9ca3af;
+}
+
+#search-filter svg {
+    color: #6b7280;
+    flex-shrink: 0;
 }

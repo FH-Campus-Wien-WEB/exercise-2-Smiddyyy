@@ -1,31 +1,36 @@
 window.onload = function () {
-    fetchMovies();
-    renderGenreFilters();
-
     const sidebar = document.getElementById("filter-sidebar");
     const toggleBtn = document.getElementById("menu-toggle");
     const closeBtn = document.getElementById("close-sidebar");
+    const searchField = document.getElementById("search-input");
     const body = document.body;
 
+    fetchMovies();
+    renderGenreFilters();
 
     closeBtn.addEventListener("click", () => {
         body.classList.toggle("sidebar-closed");
         toggleBtn.removeAttribute("hidden");
     });
 
-
     toggleBtn.addEventListener("click", () => {
         toggleBtn.setAttribute("hidden", "");
         body.classList.toggle("sidebar-closed");
+    });
+
+    searchField.addEventListener("keyup", function (event) {
+        fetchMovies();
     });
 };
 
 function fetchMovies() {
     const xhr = new XMLHttpRequest()
-    xhr.onload = () => renderMovies(xhr);
-    xhr.open("GET", `/movies?genre=${activefilters.join(',')}`);
+    xhr.addEventListener("load", () => setAvailableGenres(xhr));
+    xhr.addEventListener("load", () => renderMovies(xhr));
+    xhr.open("GET", `/movies?genre=${activefilters.join(',')}&title=${document.getElementById("search-input").value}`);
     xhr.send();
-    console.log("Fetching movies with filters:", activefilters);
+    console.log("Fetching movies with title filter:", document.getElementById("search-input").value);
+    console.log("Fetching movies with genre filters:", activefilters);
 }
 
 function renderMovies(xhrRequest) {
@@ -71,7 +76,6 @@ function renderMovies(xhrRequest) {
             movie.genres.forEach(genre => {
                 const genreSpan = document.createElement("span");
                 genreSpan.textContent = genre;
-                console.log("Rendering genre:", genre, "Active filters:", activefilters);
                 genreSpan.classList.add("genre-tag"); // Add a class for styling
                 if (activefilters.length > 0 && activefilters.includes(genre)) {
                     genreSpan.classList.add("active-genre");
@@ -254,34 +258,57 @@ function toggleCard(button) {
 };
 
 
-const ALL_GENRES = [
-    "Action",
-    "Adventure",
-    "Animation",
-    "Biography",
-    "Comedy",
-    "Crime",
-    "Documentary",
-    "Drama",
-    "Family",
-    "Fantasy",
-    "Film Noir",
-    "History",
-    "Horror",
-    "Music",
-    "Musical",
-    "Mystery",
-    "Romance",
-    "Sci-Fi",
-    "Short Film",
-    "Sport",
-    "Superhero",
-    "Thriller",
-    "War",
-    "Western"
-]
-
+// const ALL_GENRES = [
+//     "Action",
+//     "Adventure",
+//     "Animation",
+//     "Biography",
+//     "Comedy",
+//     "Crime",
+//     "Documentary",
+//     "Drama",
+//     "Family",
+//     "Fantasy",
+//     "Film Noir",
+//     "History",
+//     "Horror",
+//     "Music",
+//     "Musical",
+//     "Mystery",
+//     "Romance",
+//     "Sci-Fi",
+//     "Short Film",
+//     "Sport",
+//     "Superhero",
+//     "Thriller",
+//     "War",
+//     "Western"
+// ]
+let ALL_GENRES = [];
 let activefilters = [];
+
+function setAvailableGenres(xhrRequest){
+    ALL_GENRES = [];
+    if (xhrRequest.status == 200) {
+        const movies = JSON.parse(xhrRequest.responseText);
+        movies.forEach((movie, movieIndex) => {
+            movie.genres.forEach(genre => {
+                if (!ALL_GENRES.includes(genre)){
+                    ALL_GENRES.push(genre);
+                }
+            });
+        });
+        renderGenreFilters();
+    } else {
+        const errorMessage = document.createElement("p");
+        errorMessage.textContent =
+            "Daten konnten nicht geladen werden, Status " +
+            xhrRequest.status +
+            " - " +
+            xhrRequest.statusText;
+        document.getElementById('available-filters').append(errorMessage);
+    }
+}
 
 function renderGenreFilters() {
     const activeFilterContainer = document.getElementById("active-filters");
@@ -329,12 +356,10 @@ function renderGenreFilters() {
 
 function removefilter(genre) {
     activefilters = activefilters.filter(g => g !== genre);
-    renderGenreFilters();
     fetchMovies();
 }
 
 function addFilter(genre) {
     activefilters.push(genre);
-    renderGenreFilters();
     fetchMovies();
 }

@@ -9,7 +9,7 @@ body {
     min-height: 100vh;
 
     display: grid;
-    grid-template-rows: 20vh 70vh 10vh;
+    grid-template-rows: 10vh 85vh 5vh;
     grid-template-columns: 250px 1fr;
 
     grid-template-areas:
@@ -66,8 +66,8 @@ body.sidebar-closed aside {
 }
 
 #sidebar-header {
-    padding-top: 20px;
-    padding-right: 20px;
+    padding-top: 5px;
+    padding-right: 15px;
     display: flex;
     justify-content: right;
     align-items: baseline;
@@ -82,6 +82,9 @@ body>footer {
     color: white;
     padding: 1rem;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Button */
