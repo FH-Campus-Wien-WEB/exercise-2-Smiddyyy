@@ -3,7 +3,6 @@
 /* Page layout */
 body {
     font-family: Inter, system-ui, sans-serif;
-    background: lightgrey;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -84,7 +83,7 @@ input[type="hidden"] {
 }
 
 /* Button container */
-.buttons-container{
+.buttons-container {
     margin-top: 20px auto 10px;
     display: flex;
     justify-content: center;
@@ -103,7 +102,7 @@ button {
 }
 
 .save-btn {
-    background: #8b5cf6;
+    background: #712f71;
     color: #ffffff;
     margin-left: 20px;
 }

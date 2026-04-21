@@ -1,0 +1,76 @@
+@import url(base.css);
+
+body>aside {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 75px 1fr;
+
+    grid-template-areas:
+        "header"
+        "filters";
+
+    transition: grid-template-columns 0.3s ease;
+}
+
+/* Areas */
+#genre-filters {
+    grid-area: filters;
+}
+
+#sidebar-header {
+    grid-area: header;
+}
+
+/* Styling */
+
+#available-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+#active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+#filter-sidebar h2 {
+    margin-top: 0;
+    color: black;
+}
+
+.filter-btn {
+    display: inline-block;
+    padding: 3px 12px 6px;
+    border-radius: 999px;
+    font-size: 1rem;
+}
+
+.filter-btn.available-filter {
+    background: #dfdcef;
+    color: #374151;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.filter-btn.available-filter:hover {
+    background: #c4b9e0;
+    transform: translateY(-2px);
+    transition: all 0.2s ease;
+    box-shadow: gray 0px 4px 6px -1px, gray 0px 2px 4px -1px;
+}
+
+.filter-btn.active-filter {
+    background: #712f71;
+    color: white;
+    font-weight: 500;
+
+}
+
+.remove-filter {
+    font-size: 0.9rem;
+    color: #cfcfcf;
+    margin-left: 4px;
+    cursor: pointer;
+}

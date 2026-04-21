@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Movies!</title>
-        <link rel="stylesheet" href="index.css" />
-        <script src="index.js"></script>
-    </head>
 
-    <body>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies!</title>
+    <link rel="stylesheet" href="movie.css" />
+    <link rel="stylesheet" href="layout.css" />
+    <link rel="stylesheet" href="filter.css" />
+    <script src="index.js"></script>
+</head>
+
+<body class="sidebar-closed">
+    <header>
+        <button id="menu-toggle" aria-label="Open filters">☰</button>
+        <h1 id="page-title">Movies!</h1>
+    </header>
+    <div class="scrollable-fade">
+        <main id="movie-card-container" class="scrollable">
+
+        </main>
+    </div>
+    <aside id="filter-sidebar">
+        <div id="sidebar-header">
+            <button id="close-sidebar" aria-label="Close filters">×</button>
+        </div>
+        <div id="genre-filters">
+            <h2>Genres:</h2>
+            <div id="active-filters"></div>
+            <hr>
+            <div id="available-filters"></div>
+        </div>
+    </aside>
+    <footer>
+        <p>2024 Movie Database</p>
+    </footer>
+</body>
+
 </html>

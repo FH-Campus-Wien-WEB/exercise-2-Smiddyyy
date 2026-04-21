@@ -1,8 +1,58 @@
 html {
     font-size: 90%;
+    font-family: Inter, system-ui, sans-serif;
 }
 
 body {
     background: #C0BFF8;
     color: #eee;
+}
+
+/* custom scrollbar */
+.scrollable::-webkit-scrollbar {
+    width: 4px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 999px;
+}
+
+.scrollable::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.scrollable-fade {
+    position: relative;
+    box-shadow:
+        inset 0 30px 30px -15px #C0BFF8,
+        inset 0 -30px 30px -15px #C0BFF8;
+}
+
+.scrollable-fade::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 30px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, #C0BFF8, transparent);
+    z-index: 10;
+}
+
+.scrollable-fade::after {
+    content: "";
+    position: absolute;
+    bottom: 22px;
+    left: 0;
+    right: 0;
+    height: 30px;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent, #C0BFF8);
+    z-index: 10;
 }

@@ -20,6 +20,12 @@ app.use(express.static(path.join(__dirname, 'files')));
 
 // Configure a 'get' endpoint for data..
 app.get('/movies', async function (req, res) {
+  // accept optional query parameter 'genre' to filter movies by genre (e.g. /movies?genre=Action)
+  // can be used multiple times to filter by multiple genres (e.g. /movies?genre=Action,Sci-Fi)
+  const genreFilter = req.query.genre;
+  const genreFilters = genreFilter ? genreFilter.split(',').map(s => s.trim()) : null;
+  console.log("Received request for movies with genre filters:", genreFilters);
+
   // This endpoint will return a list of all movies stored in the JSON files (returns json data as list).
   try {
     const files = await listStoredMovies();
@@ -27,6 +33,11 @@ app.get('/movies', async function (req, res) {
     const movies = (await Promise.all(
       files.map(file => readJSON(file))
     )).filter(movie => movie !== null) // filter out any files that failed to read;
+      .filter(movie => {
+        if (!genreFilters) return true;
+        // check if atleast one of the movie's genres is in the genreFilters list
+        return movie.genres.some(genre => genreFilters.includes(genre));
+      });
 
     res.json(movies);
   } catch (err) {
@@ -69,7 +80,7 @@ app.put('/movies/:imdbID', async function (req, res) {
       .catch(() => false);
 
     await writeJSON(`${imdbID}.json`, movie);
-    
+
     if (fileExists) {
       res.status(200).json({ status: 'success', message: 'Movie updated successfully' });
     } else {
